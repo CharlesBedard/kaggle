@@ -84,6 +84,21 @@ def crop_all_images(input_file_path, output_file_path):
     np.save(output_file_path, cropped_img)
     return max_size
 
+def resize_all(input_file_path,output_file_path, current_size, size):
+    all_img = np.load(input_file_path, encoding='latin1')
+    print(all_img.shape[0])
+    all_copy = all_img.copy()
+    img_list = []
+    for i in tqdm(range(all_img.shape[0])):
+        img = imagify(all_img[i][1],current_size)
+        #resize the array
+        np.resize(all_img[i][1],(size ** 2))
+        resized_img = cv.resize(img,(size,size))
+        all_img[i][1] = de_imagify(resized_img,size)
+    np.save(output_file_path,all_img)
 
+size = crop_all_images('comp-551-kaggle-master/all/train_images.npy','comp-551-kaggle-master/all/train_images2.npy')
+resize_all('comp-551-kaggle-master/all/train_images2.npy','comp-551-kaggle-master/all/train_images2.npy',size,100)
 
-print(crop_all_images('comp-551-kaggle-master/all/train_images.npy','comp-551-kaggle-master/all/train_images_crop2.npy'))
+size = crop_all_images('comp-551-kaggle-master/all/test_images.npy','comp-551-kaggle-master/all/test_images2.npy')
+resize_all('comp-551-kaggle-master/all/test_images2.npy','comp-551-kaggle-master/all/test_images2.npy',size,100)
