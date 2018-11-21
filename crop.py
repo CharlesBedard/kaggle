@@ -4,6 +4,9 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 def imagify(origin_array, size):
+    #function to turn a 1d vector into a square matrix
+    #origin_aray -> any vector
+    #size -> the size of the matrix to create
     new_array = np.zeros((size,size))
     for i in range (0,size):
         for j in range (0,size):
@@ -11,6 +14,9 @@ def imagify(origin_array, size):
     return new_array
 
 def de_imagify(img, size):
+    #function to turn a square matrix into a vector
+    #img -> square matrix
+    #size -> the size of the square matrix
     new_array = np.zeros((size ** 2))
     for i in range(size):
         for j in range(size):
@@ -18,6 +24,10 @@ def de_imagify(img, size):
     return np.asarray(new_array)
 
 def crop_all_images(input_file_path, output_file_path):
+    #function to take all the images from the input_file_path, and crop them to a uniform size
+    #by default, all images are cropped and rescaled to 100,100
+    #the resulting images are saved into the output_file_path
+    #return: the size of the biggest cropped image, before rescaling
     all_img = np.load(input_file_path, encoding='latin1')
 
     #make an identical copy of the file, we will only modify the data of the images
@@ -85,6 +95,10 @@ def crop_all_images(input_file_path, output_file_path):
     return max_size
 
 def resize_all(input_file_path,output_file_path, current_size, size):
+    #function to resize all the images in a file
+    #takes the images in input_file_path and puts the resized ones in output_file_path
+    #current_size -> the current size of the square matrices representing the images
+    #size -> the wanted size of the square matrices
     all_img = np.load(input_file_path, encoding='latin1')
     print(all_img.shape[0])
     all_copy = all_img.copy()
@@ -97,8 +111,10 @@ def resize_all(input_file_path,output_file_path, current_size, size):
         all_img[i][1] = de_imagify(resized_img,size)
     np.save(output_file_path,all_img)
 
+    
+#code example taking the images in train_images.npy, cropping them, then rescaling them
 size = crop_all_images('comp-551-kaggle-master/all/train_images.npy','comp-551-kaggle-master/all/train_images2.npy')
 resize_all('comp-551-kaggle-master/all/train_images2.npy','comp-551-kaggle-master/all/train_images2.npy',size,100)
-
+#code example taking the images in test_images.npy, cropping them, then rescaling them
 size = crop_all_images('comp-551-kaggle-master/all/test_images.npy','comp-551-kaggle-master/all/test_images2.npy')
 resize_all('comp-551-kaggle-master/all/test_images2.npy','comp-551-kaggle-master/all/test_images2.npy',size,100)
